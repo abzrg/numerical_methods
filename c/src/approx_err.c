@@ -25,13 +25,13 @@ double func(double x)
  *
  * Returns: true if h is not zero (considering a certain tolerance)
  *
+ * @param f: function whose derivative we are trying to calculate
  * @param x: the position of the function
  * @param h: step size
- * @param f: function whose derivative we are trying to calculate
  * @param result: the value of the function derivative will be populated in this
  * address
  */
-bool forward_euler(double x, double h, double (*f)(double), double* result)
+bool forward_euler(double (*f)(double), double x, double h, double* result)
 {
     // Check if h is not "zero" with respect to a TOLERANCE
     if (h < TOLERANCE) {
@@ -40,6 +40,7 @@ bool forward_euler(double x, double h, double (*f)(double), double* result)
 
     assert(result != NULL);
     *result = (f(x + h) - f(x)) / h;
+
     return true;
 }
 
@@ -76,7 +77,7 @@ int main(void)
     // Print a table of h, derivative, and relative error
     for (size_t i = 0; i < ARR_LEN(steps); i++) {
         // If h was too small or zero then do nothing
-        if (!forward_euler(x, steps[i], &func, &curr_approx)) {
+        if (!forward_euler(func, x, steps[i], &curr_approx)) {
             fprintf(stderr, "The step was almost zero. Either change the step"
                             " size (h) to a non-zero value or decrease the"
                             " tolerance\n");
